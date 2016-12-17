@@ -40,6 +40,8 @@
         }
       });
 
+      Thing1.prototype.constructor = Thing1;
+
       function Thing2(obj) {
         Thing1.call(this, obj);
         this.b = obj.b || ' mom!';
@@ -54,6 +56,8 @@
           console.log(this.a + this.b);
         }
       });
+
+      Thing2.prototype.constructor = Thing2;
 
       t1 = new Thing1({a: 'Hello'});
       t2 = new Thing2({b: ' world!'});
