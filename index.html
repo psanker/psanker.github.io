@@ -34,33 +34,31 @@
         this.a = obj.a || 'hi';
       }
 
-      Thing1.prototype = Object.create(Object.prototype, {
-        sayA: function () {
-          console.log(this.a);
-        }
-      });
-
+      Thing1.prototype = Object.create(Object.prototype);
       Thing1.prototype.constructor = Thing1;
+
+      Thing1.prototype.sayA = function () {
+        console.log(this.a);
+      };
 
       function Thing2(obj) {
         Thing1.call(this, obj);
         this.b = obj.b || ' mom!';
       }
 
-      Thing2.prototype = Object.create(Thing1.prototype, {
-        sayB: function() {
-          console.log(this.b);
-        },
-
-        sayAandB: function() {
-          console.log(this.a + this.b);
-        }
-      });
-
+      Thing2.prototype = Object.create(Thing1.prototype);
       Thing2.prototype.constructor = Thing2;
 
+      Thing2.prototype.sayB = function() {
+        console.log(this.b);
+      };
+
+      Thing2.prototype.sayAandB = function() {
+        console.log(this.a + this.b);
+      };
+
       t1 = new Thing1({a: 'Hello'});
-      t2 = new Thing2({b: ' world!'});
+      t2 = new Thing2({a: 'Hello', b: ' world!'});
 
       t1.sayA();
       t2.sayA();
