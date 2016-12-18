@@ -27,55 +27,5 @@
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
     <script src="assets/lodash.js"></script>
     <!-- <script src="assets/main.js"></script> -->
-    <script>
-      // Testing
-
-      function Thing1(obj) {
-        this.a = obj.a || 'hi';
-      }
-
-      Thing1.prototype = Object.create(Object.prototype);
-      Thing1.prototype.constructor = Thing1;
-
-      Thing1.prototype.sayA = function () {
-        console.log(this.a);
-      };
-
-      function Thing2(obj) {
-        Thing1.call(this, obj);
-        this.b = obj.b || ' mom!';
-      }
-
-      Thing2.prototype = Object.create(Thing1.prototype);
-      Thing2.prototype.constructor = Thing2;
-
-      Thing2.prototype.sayB = function() {
-        console.log(this.b);
-      };
-
-      Thing2.prototype.sayAandB = function() {
-        console.log(this.a + this.b);
-      };
-
-      t1 = new Thing1({a: 'Hello'});
-      t2 = new Thing2({a: 'Hello', b: ' world!'});
-
-      t1.sayA();
-      t2.sayA();
-      t2.sayB();
-      t2.sayAandB();
-
-      if (t2 instanceof Thing2) {
-        console.log('t2 is a Thing2');
-      } else {
-        console.log('t2 is NOT a Thing2');
-      }
-
-      if (t2 instanceof Thing1) {
-        console.log('t2 is a Thing1');
-      } else {
-        console.log('t2 is NOT a Thing1');
-      }
-    </script>
   </body>
 </html>
