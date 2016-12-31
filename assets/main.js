@@ -99,6 +99,29 @@
     }
   }
 
+  /**
+   * Stage class methods -- the 'StageManager' if you will
+   *
+   */
+
+  Stage._active_stages = {};
+
+  Stage.stage = function (key) {
+    let stage = lo.find(Stage._active_stages, key);
+
+    if (lo.isUndefined(stage)) {
+      return null;
+    } else {
+      return stage;
+    }
+  };
+
+  Stage.buildStage = function (width, height, actors = []) {
+    let stage = new Stage(width, height, actors);
+
+    
+  };
+
   Stage.prototype = Object.create(Object.prototype);
   Stage.prototype.constructor = Stage;
 
@@ -360,7 +383,20 @@
   };
 
   Actor.prototype.aabb = function (actor) {
-    throw new Exception('This Actor has not implemented Actor::aabb()');
+    // Generate bounding boxes based on outer width/height
+    let w1 = j(this.obj).outerWidth(),
+        h1 = j(this.obj).outerHeight(),
+        w2 = j(actor.obj).outerWidth(),
+        h2 = j(actor.obj).outerHeight();
+
+    let box1 = {x1: this.pos.x - (0.5)*(w1),
+                y1: this.pos.y - (0.5)*(h1),
+                x2: this.pos.x + (0.5)*(w1),
+                y2: this.pos.y + (0.5)*(h1)},
+        box2 = {x1: actor.pos.x - (0.5)*(w1),
+                y1: actor.pos.y - (0.5)*(h1),
+                x2: actor.pos.x + (0.5)*(w1),
+                y2: actor.pos.y + (0.5)*(h1)};
   };
 
   /**
@@ -380,6 +416,11 @@
   Particle.prototype = Object.create(Actor.prototype);
   Particle.prototype.constructor = Particle;
 
+  /** OVERRIDE
+   *
+   *
+   *
+   */
   Particle.prototype.aabb = function (vec) {
     if (this.pos.distance(vec) <= this.radius) {
       return true;
