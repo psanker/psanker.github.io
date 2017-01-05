@@ -53,20 +53,6 @@ define(['lodash', 'object-hash', 'util/vec2d'], function (_, hash, Vec2d) {
   Actor.prototype = Object.create(Object.prototype);
   Actor.prototype.constructor = Actor;
 
-  /**
-   * Actor::move(vec, [additive])
-   * Moves the actor to the input Vec2d 'vec'
-   * - If 'additive', 'vec' will add to the actor's position
-   *
-   */
-  Actor.prototype.move = function (vec, additive = true) {
-    if (additive) {
-      this.pos.add(vec, true);
-    } else {
-      this.pos = vec;
-    }
-  };
-
   Actor.prototype.aabb = function (actor) {
     // Generate bounding boxes based on outer width/height
     let w1 = j(this.obj).outerWidth(),
@@ -82,6 +68,65 @@ define(['lodash', 'object-hash', 'util/vec2d'], function (_, hash, Vec2d) {
                 y1: actor.pos.y - (0.5)*(h1),
                 x2: actor.pos.x + (0.5)*(w1),
                 y2: actor.pos.y + (0.5)*(h1)};
+  };
+
+  /**
+   * Actor#move( vec, [additive] )
+   *
+   * Moves the actor to the input Vec2d 'vec'
+   *
+   * @param {Vec2d} vec A vector (in {Stage} space)
+   * @param {boolean} additive Determines if 'vec' is added to the position or assigned
+   */
+  Actor.prototype.move = function (vec, additive = true) {
+    if (_.isNil(vec)) {
+      console.log('Attempted to assign undefined/null position; Ignoring...');
+      return;
+    }
+
+    if (!(vec instanceof Vec2d)) {
+      console.log('Attempted to move actor without a vector type; Ignoring...');
+      return;
+    }
+
+    if (additive) {
+      this.pos.add(vec, true);
+    } else {
+      this.pos = vec;
+    }
+  };
+
+  /**
+   * Actor#accelerate( vec, [additive] )
+   *
+   * Applies an acceleration vector to the actor, which will be picked up by the
+   * next integration cycle.
+   *
+   * @param {Vec2d} vec A vector containing some acceleration value
+   * @param {boolean} additive Determines if the vector is assigned or added
+   */
+  Actor.prototype.accelerate = function (vec, additive = true) {
+
+    // Clears up null instantiation
+    if (_.isNil(this.accel)) {
+      this.accel = new Vec2d();
+    }
+
+    if (_.isNil(vec)) {
+      console.log('Attempted to assign undefined/null acceleration; Ignoring...');
+      return;
+    }
+
+    if (!(vec instanceof Vec2d)) {
+      console.log('Attempted to accelerate without a vector type; Ignoring...');
+      return;
+    }
+
+    if (additive) {
+      this.accel.add(vec, true);
+    } else {
+      this.accel = vec;
+    }
   };
 
   Actor.prototype.hashcode = function () {

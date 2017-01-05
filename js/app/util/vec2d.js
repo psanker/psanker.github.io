@@ -1,6 +1,4 @@
-/* jshint esversion: 6 */
-
-define(['lodash', 'jquery'], function (_, $) {
+define(['lodash'], function (_) {
   function Vec2d(coords) {
     if (_.isArray(coords)) {
       this.x = coords[0];
@@ -68,12 +66,11 @@ define(['lodash', 'jquery'], function (_, $) {
   Vec2d.prototype.normalize = function (write = false) {
     let n = this.norm();
 
-    if (write) {
-      this.x /= n;
-      this.y /= n;
-      return this;
+    // Zero vectors cannot be normalized; return a zero vector
+    if (n === 0) {
+      return this.scale(0, write);
     } else {
-      this.scale(Math.pow(n, -1));
+      return this.scale(1 / n, write);
     }
   };
 

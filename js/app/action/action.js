@@ -10,7 +10,7 @@ define(['require'], function (require) {
    */
   function Action(id, props = [], options = {}) {
 
-    Object.defineProperties(Action.prototype, {
+    Object.defineProperties(this, {
       'ident' : {
         get: function () {
           return !this._ident ? 'undef-action' : this._ident; // Shouldn't happen, but hey
@@ -41,19 +41,17 @@ define(['require'], function (require) {
         }
       },
 
-      'options' : {
+      'priority' : {
         get: function () {
-          return !this._opts ? {} : this._opts; // Once again, precaution
+          return !this._priority ? -1 : this.priority;
         },
 
-        set: function (obj) {
-          let o = this._opts || {};
+        set: function (n) {
 
-          if (_.isObject(obj) && !_.isEmpty(obj)) {
-            o = obj;
+          if (!_.isNumber(n)) {
+            throw new Error('Priority of action must be a number');
           }
 
-          this._opts = o;
         }
       }
     });
@@ -89,15 +87,64 @@ define(['require'], function (require) {
   };
 
   /**
-   * Action#perform( data )
+   * Action#run( data )
    *
    * Interface method -- must be implemented
    *
    * Performs the {Action} depending on a set of data
    *
    */
-  Action.prototype.perform = function (data) {
-    throw new Error('Action performance not implemented');
+  Action.prototype.run = function (data) {
+    throw new Error('Action not implemented');
+  };
+
+  /**
+   * @static @enum
+   *
+   * Action.Priority
+   *
+   * The different types of action priorities. MUST be assigned in the action implementation; else will be -1.
+   *
+   */
+  Action.Priority = {
+    LOW: 0,
+    MEDIUM: 1,
+    HIGH: 2
+  };
+
+  /**
+   * @static
+   *
+   * Action.Registry
+   *
+   */
+  Action.Registry = {
+    registered: {},
+
+    register: function (Type) {
+
+      // Verify to make sure Type is, indeed, a function
+      if (_.isFunction(Type)) {
+        let t = new Type();
+
+        // Check if what the Type makes is indeed an Action
+        if (t instanceof Action) {
+          let id = t.ident;
+
+          if (_.isNil(Action.Registry.registered[id])) {
+            Action.Registry.registered[id] = Type;
+          }
+        }
+      }
+    },
+
+    build: function (id) {
+      if (!_.isNil(Action.Registry.registered[id])) {
+        return new Action.Registry.registered[id]();
+      } else {
+        return undefined;
+      }
+    }
   };
 
   return Action;
